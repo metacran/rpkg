@@ -2,6 +2,11 @@
 
 S3method(print,rpkg)
 S3method(print,rpkgs)
+export(pkg_download)
 export(pkg_list)
 export(pkg_paths)
+importFrom(httr,GET)
+importFrom(httr,content)
+importFrom(httr,headers)
+importFrom(httr,stop_for_status)
 importFrom(prettyunits,time_ago)

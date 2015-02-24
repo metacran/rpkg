@@ -42,3 +42,17 @@ try_extract <- function(x, elem) {
   res <- x[elem]
   if (is.na(res)) "" else res
 }
+
+dir_exists <- function(dir) {
+  file.exists(dir) & file.info(dir)$isdir
+}
+
+split_pkg_names_versions <- function(pkgs) {
+  if (!length(pkgs)) return(pkgs)
+  pkgs <- strsplit(pkgs, "-")
+  stopifnot(all(sapply(pkgs, length) <= 2))
+  name <- vapply(pkgs, "[", "", 1)
+  version <- vapply(pkgs, "[", "", 2)
+  version[is.na(version)] <- ""
+  data_frame(name = name, version = version)
+}
