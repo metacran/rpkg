@@ -48,11 +48,20 @@ dir_exists <- function(dir) {
 }
 
 split_pkg_names_versions <- function(pkgs) {
-  if (!length(pkgs)) return(pkgs)
+
+  if (!length(pkgs)) {
+    return(data_frame(name = character(), version = character()))
+  }
+
   pkgs <- strsplit(pkgs, "-")
   stopifnot(all(sapply(pkgs, length) <= 2))
   name <- vapply(pkgs, "[", "", 1)
   version <- vapply(pkgs, "[", "", 2)
   version[is.na(version)] <- ""
   data_frame(name = name, version = version)
+}
+
+drop_null <- function(...) {
+  l <- c(...)
+  l[ !vapply(l, is.null, FALSE) ]
 }
