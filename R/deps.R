@@ -37,15 +37,22 @@
 
 dep_types<- c("Imports", "Depends", "LinkingTo", "Enhances", "Suggests")
 
-pkg_deps <- function(pkg, recursive = c("Imports*", "Depends*",
-                            "LinkingTo*")) {
+default_recursive <- function(recursive) {
+  recursive <- if (is.null(recursive)) {
+    c("Imports*", "Depends*", "LinkingTo*")
+  } else {
+    as.character(recursive)
+  }
+
+  stopifnot(all(recursive %in% c(dep_types, paste0(dep_types, "*"))))
+
+  recursive
+}
+
+pkg_deps <- function(pkg, recursive = NULL ) {
 
   pkg <- as.character(pkg)
   stopifnot(length(pkg) == 1, !is.na(pkg))
-
-  recursive <- as.character(recursive)
-
-  stopifnot(all(recursive %in% c(dep_types, paste0(dep_types, "*"))))
 
   pkg_deps_internal(pkg, recursive)
 }
@@ -57,6 +64,8 @@ pkg_deps_internal <- function(pkg, recursive, depversion = "*",
 
   pkg_ver <- split_pkg_names_versions(pkg)
   version <- if (pkg_ver$version != "") pkg_ver$version
+
+  recursive <- default_recursive(recursive)
 
   deps <- list()
 
