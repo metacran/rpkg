@@ -4,13 +4,12 @@
 \alias{pkg_tree}
 \title{Dependency tree of a package}
 \usage{
-pkg_tree(pkg, recursive = c("Imports*", "Depends*", "LinkingTo*"))
+pkg_tree(pkg, include_base = FALSE)
 }
 \arguments{
 \item{pkg}{Package name, optionally with version number after a dash.}
 
-\item{recursive}{What kind of dependencies to collect. If a type ends
-  with a star, that type of dependency is collected recursively.}
+\item{include_base}{Whether to include base R packages in the tree.}
 }
 \description{
 Dependency tree of a package

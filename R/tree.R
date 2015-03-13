@@ -2,23 +2,23 @@
 #' Dependency tree of a package
 #'
 #' @param pkg Package name, optionally with version number after a dash.
-#' @param recursive What kind of dependencies to collect. If a type ends
-#'   with a star, that type of dependency is collected recursively.
+#' @param include_base Whether to include base R packages in the tree.
 #'
 #' @export
 
-pkg_tree <- function(pkg, recursive = c("Imports*", "Depends*",
-                            "LinkingTo*")) {
-
-  draw_tree(pkg_deps(pkg, recursive = recursive))
+pkg_tree <- function(pkg, include_base = FALSE) {
+  draw_tree(pkg_deps(pkg), include_base = include_base)
 }
 
-draw_tree <- function(deps, prefix = 0) {
+draw_tree <- function(deps, prefix = "", include_base = FALSE) {
 
-  if (prefix != 0) cat(rep(" ", prefix - 2), "`-", sep = "")
+  if (deps$package %in% base_packages && !include_base) return()
+
+  if (prefix != "") cat(prefix, "`--", sep = "")
   cat(deps$package, "\n")
   for (el in deps$deps) {
-    if (length(el)) draw_tree(el, prefix = prefix + 2)
+    if (length(el)) draw_tree(el, prefix = paste0("   ", prefix),
+                              include_base = include_base)
   }
 
   invisible()

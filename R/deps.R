@@ -1,109 +1,38 @@
 
-## Package dependencies, we create a structure like this:
+base_packages <- c("base", "compiler", "datasets", "graphics",
+                   "grDevices", "grid", "methods", "parallel",
+                   "splines", "stats", "stats4", "tcltk", "tools",
+                   "utils")
 
-'
-{ "package": "devtools",
-  "depversion": "*",
-  "version": "1.7.0",
-  "deps":
-    [{ "package": "httr",
-       "depversion": ">= 0.4",
-       "deptype": "Imports",
-       "version": "0.6.1",
-       "deps":
-         [{ "package": "digest",
-            "depversion": "*",
-            "deptype": "Imports",
-            "version": "0.6.8" },
-          { "package": "jsonlite",
-            "depversion": "*",
-            "deptype": "Imports",
-            "version": "0.9.14" },
-          { "package": "mime",
-            "depversion": "*",
-            "deptype": "Imports",
-            "version": "0.2" },
-          ]},
-     { "package": "RCurl",
-       "depversion": "*",
-       "deptype": "Imports",
-       "version": "1.95-4.5" },
-     { "package": "memoise",
-       "depversion": "*",
-       "deptype": "Imports",
-       "version": "0.2.1" }]
+dep_types <- c("Imports", "Depends", "LinkingTo", "Enhances", "Suggests")
+
+#' @importFrom httr GET content
+#' @importFrom jsonlite fromJSON
+
+pkg_deps <- function(pkg, version = NULL) {
+
+  version <- if (is.null(version)) "" else paste0("/", version)
+  url <- paste0("http://crandb.r-pkg.org/-/pkgdeps/", pkg, version)
+
+  deps <- fromJSON(content(GET(url), as = "text"), simplifyVector = FALSE)
+
+  make_tree(pkg, deps)
 }
-'
 
-dep_types<- c("Imports", "Depends", "LinkingTo", "Enhances", "Suggests")
 
-default_recursive <- function(recursive) {
-  recursive <- if (is.null(recursive)) {
-    c("Imports*", "Depends*", "LinkingTo*")
-  } else {
-    as.character(recursive)
+make_tree <- function(tree, deps) {
+
+  norm_dep <- function(x) {
+    if (is.logical(x)) {
+      list()
+    } else {
+      lapply(x, make_tree, deps)
+    }
   }
 
-  stopifnot(all(recursive %in% c(dep_types, paste0(dep_types, "*"))))
-
-  recursive
-}
-
-pkg_deps <- function(pkg, recursive = NULL ) {
-
-  pkg <- as.character(pkg)
-  stopifnot(length(pkg) == 1, !is.na(pkg))
-
-  pkg_deps_internal(pkg, recursive)
-}
-
-#' @importFrom crandb package
-
-pkg_deps_internal <- function(pkg, recursive, depversion = "*",
-                              deptype = NA) {
-
-  pkg_ver <- split_pkg_names_versions(pkg)
-  version <- if (pkg_ver$version != "") pkg_ver$version
-
-  recursive <- default_recursive(recursive)
-
-  deps <- list()
-
-  desc <- try(silent = TRUE, package(pkg_ver$name, version = version))
-  if (! inherits(desc, "try-error")) {
-    recursive2 <- grep("\\*$", recursive, value = TRUE)
-    recursive <- sub("\\*$", "", recursive)
-    for (dt in recursive) deps <- c(deps, get_deps(desc[dt], recursive2))
+  if (is.character(tree)) {
+    list(package = tree, deps = norm_dep(deps[[tree]]))
   } else {
-    desc <- list(Version = if (pkg_ver$version != "") pkg_ver$version else NA)
+    tree
   }
-
-  list(
-    package = pkg_ver$name,
-    depversion = depversion,
-    deptype = deptype,
-    version = desc$Version,
-    deps = deps
-  )
-}
-
-get_deps <- function(deplist, recursive) {
-  deptype <- names(deplist)
-  deplist <- deplist[[1]]
-
-  ## Dependency on R itself
-  deplist <- deplist[ names(deplist) != "R" ]
-
-  ## No base packages
-  deplist <- deplist[ ! is_base_package(names(deplist)) ]
-
-  unname(mapply(
-    SIMPLIFY = FALSE,
-    names(deplist),
-    unname(unlist(deplist)),
-    FUN = function(n, dv) {
-      pkg_deps_internal(n, recursive, depversion = dv,
-                        deptype = deptype)
-
-    }))
 }
