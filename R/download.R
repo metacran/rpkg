@@ -27,10 +27,7 @@ pkg_download <- function(pkgs, dest_dir = ".") {
   stopifnot(all(!is.na(pkgs)))
   pkgtab <- split_pkg_names_versions(pkgs)
 
-  stopifnot(all(!is.na(pkgtab$name)), all(!is.na(pkgtab$version)))
-  stopifnot(!any(duplicated(pkgtab$name)))
-  stopifnot(all(!is.na(dest_dir)),
-            length(dest_dir) == 1)
+  stopifnot(all(!is.na(dest_dir)), length(dest_dir) == 1)
   stopifnot(dir_exists(dest_dir))
 
   res <- apply(pkgtab, 1, function(pkg) {

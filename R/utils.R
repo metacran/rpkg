@@ -53,12 +53,14 @@ split_pkg_names_versions <- function(pkgs) {
     return(data_frame(name = character(), version = character()))
   }
 
-  pkgs <- strsplit(pkgs, "-")
-  stopifnot(all(sapply(pkgs, length) <= 2))
-  name <- vapply(pkgs, "[", "", 1)
-  version <- vapply(pkgs, "[", "", 2)
-  version[is.na(version)] <- ""
-  data_frame(name = name, version = version)
+  pkgtab <- data_frame(
+    name = sub("-.*$", "", pkgs),
+    version = sub("^[^-]*-?", "", pkgs)
+  )
+
+  stopifnot(all(!is.na(pkgtab$name)))
+
+  pkgtab
 }
 
 drop_null <- function(...) {
