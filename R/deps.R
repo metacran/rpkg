@@ -9,14 +9,26 @@ dep_types <- c("Imports", "Depends", "LinkingTo", "Enhances", "Suggests")
 #' @importFrom httr GET content
 #' @importFrom jsonlite fromJSON
 
-pkg_deps <- function(pkg, version = NULL) {
+pkg_deps <- function(pkg, tree = TRUE, include_base = FALSE) {
 
-  version <- if (is.null(version)) "" else paste0("/", version)
-  url <- paste0("http://crandb.r-pkg.org/-/pkgdeps/", pkg, version)
+  pkgtab <- split_pkg_names_versions(pkg)
+  if (pkgtab$version != "") pkgtab$version <- paste0("/", pkgtab$version)
+
+  url <- paste0("http://crandb.r-pkg.org/-/pkgdeps/",
+                pkgtab$name, pkgtab$version)
 
   deps <- fromJSON(content(GET(url), as = "text"), simplifyVector = FALSE)
 
-  make_tree(pkg, deps)
+  if (!include_base) {
+    deps <- deps[ ! names(deps) %in% base_packages ]
+    deps[] <- lapply(deps, setdiff, y = base_packages)
+  }
+
+  if (tree) {
+    make_tree(names(deps)[1], deps)
+  } else {
+    deps
+  }
 }
 
 

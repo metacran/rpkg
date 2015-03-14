@@ -7,18 +7,15 @@
 #' @export
 
 pkg_tree <- function(pkg, include_base = FALSE) {
-  draw_tree(pkg_deps(pkg), include_base = include_base)
+  draw_tree(pkg_deps(pkg, include_base = include_base))
 }
 
 draw_tree <- function(deps, prefix = "", include_base = FALSE) {
 
-  if (deps$package %in% base_packages && !include_base) return()
-
   if (prefix != "") cat(prefix, "`--", sep = "")
   cat(deps$package, "\n")
   for (el in deps$deps) {
-    if (length(el)) draw_tree(el, prefix = paste0("   ", prefix),
-                              include_base = include_base)
+    if (length(el)) draw_tree(el, prefix = paste0("   ", prefix))
   }
 
   invisible()
