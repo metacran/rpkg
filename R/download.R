@@ -32,10 +32,14 @@ pkg_download <- function(pkgs, dest_dir = ".") {
 
   res <- apply(pkgtab, 1, function(pkg) {
     url <- sprintf(gh_cran_url, pkg["name"], pkg["version"])
+    message("Downloading ", pkg["name"], "-",
+            if (pkg["version"] == "") "latest" else pkg["version"], " ...",
+            appendLF = FALSE)
     file <- GET(url)
     stop_for_status(file)
     dest_file <- file.path(dest_dir, file_name_from_github_response(file))
     writeBin(content(file, as = "raw"), con = dest_file)
+    message(" done.")
     dest_file
   })
   names(res) <- pkgs
