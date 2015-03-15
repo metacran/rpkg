@@ -43,7 +43,7 @@ pkg_download <- function(pkgs, dest_dir = ".") {
     dest_file
   })
   names(res) <- pkgs
-  res
+  invisible(res)
 }
 
 file_name_from_github_response <- function(resp) {
