@@ -67,3 +67,14 @@ drop_null <- function(...) {
   l <- c(...)
   l[ !vapply(l, is.null, FALSE) ]
 }
+
+escape_package_name <- function(pkgs) {
+  gsub(".", "\\.", pkgs, fixed = TRUE)
+}
+
+create_writable_dir <- function(dir) {
+  if (file.exists(dir) && !is_dir(dir)) {
+    stop("Directory exists and not a directory")
+  }
+  if (!file.exists(dir)) dir.create(dir)
+}

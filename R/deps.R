@@ -48,3 +48,16 @@ make_tree <- function(tree, deps) {
     tree
   }
 }
+
+
+topo_sort <- function(deps) {
+  res <- character(0)
+  while (length(deps) > 0) {
+    zeroin <- names(deps)[(vapply(deps, length, 1) == 0)]
+    if (!length(zeroin)) stop("Invalid dependency structure, loops?")
+    res <- c(res, zeroin)
+    deps <- lapply(deps, setdiff, y = zeroin)
+    deps <- deps[ ! names(deps) %in% zeroin ]
+  }
+  res
+}
