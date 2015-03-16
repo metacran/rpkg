@@ -4,9 +4,11 @@
 \alias{pkg_list}
 \title{List installed packages}
 \usage{
-pkg_list(lib = pkg_paths())
+pkg_list(filter = "", lib = pkg_paths())
 }
 \arguments{
+\item{filter}{Regular expression to filter the package list.}
+
 \item{lib}{Character vector of library directories,
 defaults to \code{\link{pkg_paths}}.}
 }

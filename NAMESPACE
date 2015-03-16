@@ -3,6 +3,7 @@
 S3method(print,rpkg)
 S3method(print,rpkgs)
 export(pkg_download)
+export(pkg_install)
 export(pkg_list)
 export(pkg_paths)
 export(pkg_tree)

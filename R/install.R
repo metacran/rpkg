@@ -1,6 +1,24 @@
 
 ## TODO: better default installation path
 ## TODO: implement multiple packages
+
+#' Install packages
+#'
+#' @param pkgs The package(s) to install. Specific versions
+#'   can be specified after a dash.
+#' @param lib Library directory to install the packages to.
+#' @param ask Whether to ask for confirmation before proceeding
+#'   with the installation.
+#' @param download_dir Directory to store the downloaded
+#'   packages in.
+#' @return Invisibly a logical vector which is \code{TRUE} for
+#'   successfully installed packages, and \code{FALSE} for others.
+#'
+#' @export
+#' @examples
+#' pkg_install("httr", lib = "/tmp")
+#' pkg_install("magrittr-1.0.0", lib = "/tmp", ask = FALSE)
+
 pkg_install <- function(pkgs, lib = pkg_paths()[1],
                         ask = interactive(), download_dir = tempfile()) {
 
