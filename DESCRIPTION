@@ -10,4 +10,5 @@ BugReports: https://github.com/metacran/rpkg/issues
 Imports:
     prettyunits,
     httr,
-    jsonlite
+    jsonlite,
+    crandb
