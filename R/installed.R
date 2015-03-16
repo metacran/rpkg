@@ -33,8 +33,8 @@ get_package_rds <- function(package, lib = pkg_paths()) {
 }
   
 ## Check installed version of a package
-get_installed_version <- function(package) {
-  rds <- get_package_rds(package)
+get_installed_version <- function(package, lib = pkg_paths()) {
+  rds <- get_package_rds(package, lib = lib)
   if (is.null(rds)) return(NULL)
   unname(read_package_rds(rds[1])[[1]]["Version"])
 }
