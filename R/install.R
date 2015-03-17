@@ -39,7 +39,7 @@ pkg_install <- function(pkgs, lib = pkg_paths()[1],
   order <- topo_sort(deps)
 
   ## Check what we have
-  to_install <- needs_upgrade(order)
+  to_install <- needs_upgrade(order, lib = lib)
   
   ## Is there anything to install?
   if (any(to_install != "no")) {
