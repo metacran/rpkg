@@ -17,7 +17,7 @@ NULL
 ## * pkg_list       - list installed packages
 ##   pkg_search     - search for packages
 ## * pkg_info       - display information about package
-##   pkg_outdated   - show installed packages that are outdated
+## * pkg_outdated   - show installed packages that are outdated
 ##   pkg_doctor     - sanity checks
 ## * pkg_paths      - set/get package directories
 ## * pkg_tree       - package(s) and their dependency tree

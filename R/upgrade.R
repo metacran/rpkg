@@ -23,3 +23,45 @@ needs_upgrade <- function(new_versions) {
   
   structure(res, names = new_versions)
 }
+
+
+#' List outdated packages
+#'
+#' @param filter Regular expression to filter packages to check.
+#' @param lib Library paths to look at.
+#' @return A data frame with columns: package, installed, latest.
+
+#' @export
+
+pkg_outdated <- function(filter = "", lib = pkg_paths()) {
+  pkgs <- pkg_list(filter = filter, lib = lib)
+  names <- vapply(pkgs, "[[", "", "Package")
+
+  latest <- crandb_latest_versions(names)
+
+  status <- vapply(pkgs, FUN.VALUE = "", function(pkg) {
+    if (! pkg[["Package"]] %in% names(latest)) {
+      "non-cran"
+    } else if (compareVersion(pkg[["Version"]],
+                              latest[pkg[["Package"]]]) != -1) {
+      "uptodate"
+    } else {
+      "obsolete"
+    }
+  })
+
+  cat(sep = "", length(pkgs), " packages, ",
+      sum(status == "non-cran"), " not from CRAN, ",
+      sum(status == "uptodate"), " up to date, ",
+      sum(status == "obsolete"), " needs upgrade:\n")
+
+  uptab <- data_frame(
+    package = names[status == "obsolete"],
+    installed = vapply(pkgs, "[[", "", "Version")[status == "obsolete"],
+    latest = latest[ names[status == "obsolete"] ]
+  )
+
+  print(uptab)
+
+  invisible(uptab)
+}
