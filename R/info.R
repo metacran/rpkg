@@ -8,7 +8,6 @@
 #' @param lib Search paths to see if the package is installed.
 #' @return An rpkg package, invisibly.
 #'
-#' @importFrom crandb package
 #' @export
 
 pkg_info <- function(pkg, lib = pkg_paths()) {
@@ -19,20 +18,7 @@ pkg_info <- function(pkg, lib = pkg_paths()) {
   stopifnot(length(pkg) == 1, !is.na(pkg))
   stopifnot(all(!is.na(lib)))
 
-  pkgtab <- split_pkg_names_versions(pkg)
-
-  tryCatch(
-    regi <- package(
-      pkgtab$name,
-      version = if (pkgtab$version == "") NULL else pkgtab$version
-    ),
-    error = function(e) {
-      if (grepl("document not found", e)) {
-        stop("Unknown package or package version.", call. = FALSE)
-      } else {
-        stop("Crandb error:\n", e, call. = FALSE)
-      }
-    })
+  regi <- crandb_pkgs(pkg)
 
   regi$InstalledVersion <- get_installed_version(pkgtab$name, lib = lib)
 
@@ -43,6 +29,8 @@ pkg_info <- function(pkg, lib = pkg_paths()) {
   } else {
     paste("version", regi$InstalledVersion, "installed")
   }
+
+  pkgtab <- split_pkg_names_versions(pkg)
 
   cat(sep = "", pkgtab$name, "-", regi$Version, " -- ", inst_text, "\n",
       "---------------------------\n")
