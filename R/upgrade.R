@@ -50,18 +50,25 @@ pkg_outdated <- function(filter = "", lib = pkg_paths()) {
     }
   })
 
-  cat(sep = "", length(pkgs), " packages, ",
-      sum(status == "non-cran"), " not from CRAN, ",
-      sum(status == "uptodate"), " up to date, ",
-      sum(status == "obsolete"), " needs upgrade:\n")
-
   uptab <- data_frame(
     package = names[status == "obsolete"],
     installed = vapply(pkgs, "[[", "", "Version")[status == "obsolete"],
     latest = latest[ names[status == "obsolete"] ]
   )
 
-  print(uptab)
+  uptab <- uptab[order(uptab$package), ]
+
+  cat(sep = "", length(pkgs), " packages, ",
+      sum(status == "non-cran"), " not from CRAN, ",
+      sum(status == "uptodate"), " up to date, ",
+      sum(status == "obsolete"), " needs upgrade")
+
+  if (nrow(uptab)) {
+    cat(":\n")
+    print(uptab)
+  } else {
+    cat(".\n")
+  }
 
   invisible(uptab)
 }
