@@ -67,12 +67,15 @@ pkg_install <- function(pkgs, lib = pkg_paths()[1],
   files <- pkg_download(order[to_install != "no"], dest_dir = download_dir)
   
   ## Install all
-  for (f in files) {
-    if (ask) message("Installing ", basename(f), " ...", appendLF = FALSE)
-    install.packages(pkgs = f, repos = NULL, lib = lib,
-                     dependencies = FALSE, quiet = TRUE, type = "source")
-    if (ask) message(" done.")
+  if (ask) {
+    msg <- paste0("Installing ", paste(basename(files), collapse = ", "), ".")
+    msg <- paste(strwrap(msg), collapse = "\n ")
+    message(msg)
   }
-    
+  install.packages(pkgs = files, repos = NULL, lib = lib,
+                   dependencies = FALSE, quiet = TRUE, type = "source")
+
+  if (ask) message("Done.")
+
   invisible(structure(rep(TRUE, length(pkgs)), names = pkgs))
 }
