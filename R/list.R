@@ -13,6 +13,6 @@
 #' pkg_list()
 
 pkg_list <- function(filter = "", lib = pkg_paths()) {
-  rds <- get_package_rds(filter, lib)
+  rds <- get_package_rdss(filter, lib)
   read_package_rds(rds)
 }
