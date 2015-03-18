@@ -27,7 +27,7 @@ pkg_install <- function(pkgs, lib = pkg_paths()[1],
   ask <- as.logical(ask)
   download_dir <- as.character(download_dir)
 
-  stopifnot(length(pkgs) == 1, !is.na(pkgs))
+  stopifnot(all(!is.na(pkgs)))
   stopifnot(length(lib) == 1, !is.na(lib))
   stopifnot(length(ask) == 1, !is.na(ask))
   stopifnot(length(download_dir) == 1, !is.na(download_dir))
@@ -40,25 +40,23 @@ pkg_install <- function(pkgs, lib = pkg_paths()[1],
 
   ## Check what we have
   to_install <- needs_upgrade(order, lib = lib)
-  
+
   ## Is there anything to install?
   if (any(to_install != "no")) {
+    msg <- paste0(
+      "Installing ", paste(pkgs, collapse = ", "), ",  altogether ",
+      sum(to_install == "install"), " new packages, upgrading ",
+      sum(to_install == "upgrade"), "."
+    )
+    message(strwrap(msg))
     if (ask) {
-      msg <- paste0("Installing ", tail(order, 1), ",  altogether ",
-                    sum(to_install == "install"), " new packages, ",
-                    "upgrading ", sum(to_install == "upgrade"), ". ",
-                    "Proceed?")
-      message(strwrap(msg))
       if (menu(c("Yes", "No")) != 1) {
         message("Quiting.")
         return(invisible(structure(rep(FALSE, length(pkgs)), names = pkgs)))
       }
     }
   } else {
-    if (ask) {
-      message("Package ", tail(order,1),
-              " is up to date, nothing to install.")
-    }
+    message("Packages are up to date, nothing to install.")
     return(invisible(structure(rep(TRUE, length(pkgs)), names = pkgs)))
   }
 
