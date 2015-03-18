@@ -4,6 +4,8 @@ crandb_url <- "http://crandb.r-pkg.org/"
 crandb_param <- function(name, value)
   UseMethod("crandb_param")
 
+#' @export
+
 crandb_param.character <- function(name, value) {
   paste0(
     name,
