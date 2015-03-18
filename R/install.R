@@ -69,10 +69,16 @@ pkg_install <- function(pkgs, lib = pkg_paths()[1],
   ## Install all
   msg <- paste0("Installing ", paste(basename(files), collapse = ", "), ".")
   msg <- paste(strwrap(msg), collapse = "\n ")
+
   message(msg)
-  install.packages(pkgs = files, repos = NULL, lib = lib,
-                   dependencies = FALSE, quiet = TRUE, type = "source")
+  install_files(files, lib = lib)
   message("Done.")
 
   invisible(structure(rep(TRUE, length(pkgs)), names = pkgs))
+}
+
+install_files <- function(files, lib) {
+  create_writable_dir(lib)
+  install.packages(pkgs = files, repos = NULL, lib = lib,
+                   dependencies = FALSE, quiet = TRUE)
 }
