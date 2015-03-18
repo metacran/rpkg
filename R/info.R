@@ -37,3 +37,31 @@ pkg_info <- function(pkg, lib = pkg_paths()) {
 
   print(regi)
 }
+
+#' Open URL(s) of packages in a browser
+#'
+#' Opens the URLs of the given packages in the web browser.
+#' If package versions are also given, then the URLs are
+#' taken from the specified versions of the packages.
+#'
+#' If a package has multiple URLs, then all are opnened.
+#'
+#' @section Note:
+#' On OSX, there seems to be bug that prevents opening more than
+#' three tabs within a short period of time, so some URLs might not open.
+#'
+#' @param pkgs The package(s), optionally with version numbers after a
+#'   dash.
+#' @param browser Passed to \code{utils::browseURL}.
+#' @return The URLs of the packages, in a list, invisibly.
+#'
+#' @export
+#' @importFrom utils browseURL
+
+pkg_browse <- function(pkgs, browser = getOption("browser")) {
+  urls <- crandb_get_url(pkgs)
+  if (!identical(browser, FALSE)) {
+    sapply(unlist(urls), browseURL, browser = browser)
+  }
+  invisible(urls)
+}

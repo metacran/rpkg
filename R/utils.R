@@ -82,3 +82,7 @@ create_writable_dir <- function(dir) {
   }
   if (!file.exists(dir)) dir.create(dir)
 }
+
+trim <- function(x) {
+  sub("\\s*$", "", sub("^\\s*", "", x))
+}

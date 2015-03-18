@@ -1,5 +1,6 @@
 
 crandb_url <- "http://crandb.r-pkg.org/"
+cran_pkg_url <- "http://cran.r-project.org/package=%s"
 
 crandb_param <- function(name, value)
   UseMethod("crandb_param")
@@ -46,10 +47,32 @@ get_latest_versions <- function(pkgs) {
   if (length(no_ver)) {
     vers <- crandb_query("-/desc", keys = pkgs[no_ver])
     if (length(vers) != length(no_ver)) {
-      stop("Unknown CRAN package(s): ",
-           paste(unique(setdiff(pkgs[no_ver], names(vers))), collapse = ", "))
+      unknown_pkg_error(setdiff(pkgs[no_ver], names(vers)))
     }
     pkgs[no_ver] <- paste0(pkgs[no_ver], '-', sapply(vers, "[[", "version"))
   }
   pkgs
+}
+
+cran_pkg_urls <- function(pkgs) {
+  pkgs <- split_pkg_names_versions(pkgs)$name
+  sprintf(cran_pkg_url, pkgs)
+}
+
+unknown_pkg_error <- function(pkgs) {
+  stop("Unknown CRAN package(s): ",
+       paste(unique(pkgs), collapse = ", "), call. = FALSE)
+}
+
+crandb_get_url <- function(pkgs) {
+  urls <- lapply(crandb_pkgs(pkgs), "[[", "URL")
+
+  if (length(urls) < length(pkgs)) {
+    unknown_pkg_error(setdiff(pkgs, names(urls)))
+  }
+
+  urls <- mapply(urls, cran_pkg_urls(pkgs), FUN = function(u1, u2) {
+    if (!is.null(u1)) u1 else u2
+  })
+  lapply(urls, function(x) trim(strsplit(x, ",")[[1]]))
 }
