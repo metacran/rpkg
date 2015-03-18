@@ -67,7 +67,7 @@ download_urls <- function(pkgs) {
 #'   downloaded packages.
 #'
 #' @export
-#' @importFrom httr GET status_code stop_for_status content
+#' @importFrom httr GET status_code stop_for_status write_disk
 #' @examples
 #' dest_dir <- tempdir()
 #' pkg_download("testthat", dest_dir = dest_dir)
@@ -83,16 +83,16 @@ pkg_download <- function(pkgs, dest_dir = ".") {
   stopifnot(dir_exists(dest_dir))
 
   urls <- download_urls(get_latest_versions(pkgs))
-  res <- vapply(urls, FUN.VALUE = "", FUN = function(url) {
+  res <- vapply(seq_along(pkgs), FUN.VALUE = "", FUN = function(i) {
+    url <- urls[[i]]
     message("Downloading ", appendLF = FALSE)
     for (u in url) {
+      dest_file <- file.path(dest_dir, filename_from_url(u, pkgs[i]))
       message(basename(u), "... ", appendLF = FALSE)
-      if (status_code(resp <- GET(u)) == 200) break
+      if (res <- try_download(u, dest_file)) break
     }
-    stop_for_status(resp)
-    dest_file <- file.path(dest_dir, filename_from_response(resp))
-    writeBin(content(resp, as = "raw"), con = dest_file)
-    message(" done.")
+    message(if (res) " done." else "ERROR.")
+    if (!res) stop("Cannot download package ", pkgs[i])
     dest_file
   })
 
@@ -100,14 +100,16 @@ pkg_download <- function(pkgs, dest_dir = ".") {
   invisible(res)
 }
 
-#' @importFrom httr headers
-
-filename_from_response <- function(resp) {
-  if (grepl("^https://[^/\\.]*\\.github.com/", resp$url)) {
-    cont <- headers(resp)$`content-disposition`
-    cont <- sub("^.*filename=cran-", "", cont)
-    sub("-0-g[0-9a-f]+", "", cont)
+filename_from_url <- function(url, pkg) {
+  if (grepl("^https://[^/\\.]*\\.github.com/", url)) {
+    paste0(sub("-", "_", pkg), ".tar.gz")
   } else {
-    basename(resp$url)
+    basename(url)
   }
+}
+
+try_download <- function(url, dest_file) {
+  if (file.exists(dest_file)) return(TRUE)
+  resp <- GET(url, write_disk(dest_file))
+  status_code(resp) == 200
 }
