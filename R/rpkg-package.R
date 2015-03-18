@@ -21,8 +21,8 @@ NULL
 ##   pkg_doctor     - sanity checks
 ## * pkg_paths      - set/get package directories
 ## * pkg_tree       - package(s) and their dependency tree
-##   pkg_bug        - report bug for a package
-##   pkg_browse     - home page of a package (or rpkg itself), or repo URL
+## * pkg_bug        - report bug for a package
+## * pkg_browse     - home page of a package (or rpkg itself), or repo URL
 ##
 ## Configuration (later):
 ##

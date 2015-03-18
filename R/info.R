@@ -65,3 +65,36 @@ pkg_browse <- function(pkgs, browser = getOption("browser")) {
   }
   invisible(urls)
 }
+
+#' Report a bug for a package
+#'
+#' Open the web page of the package's bug tracker, or an email
+#' client to email the package's maintainer.
+#'
+#' This command is similar to \code{utils::bug.report}.
+#'
+#' @param pkg Name of the package.
+#'
+#' @export
+
+pkg_bug <- function(pkg) {
+  pkg <- as.character(pkg)
+  stopifnot(!is.na(pkg), length(pkg) == 1)
+
+  cdb_pkg <- crandb_pkgs(pkg)
+  if (!length(cdb_pkg)) unknown_pkg_error(pkg)
+
+  message("Maintainer: ", cdb_pkg[[1]]$Maintainer)
+  if (!is.null(cdb_pkg[[1]]$BugReports)) {
+    message("Opening bug report URL: ", cdb_pkg[[1]]$BugReports)
+    browseURL(cdb_pkg[[1]]$BugReports)
+  } else {
+    message("Opening email client...")
+    email <- sub("[^<]*<([^>]+)>.*", "\\1", cdb_pkg[[1]]$Maintainer)
+    browseURL(paste0("mailto:", email))
+  }
+  message("Don't forget to include the output of sessionInfo()\n",
+          "and a reproducible example")
+
+  invisible()
+}
