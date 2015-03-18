@@ -10,7 +10,7 @@ NULL
 ## * pkg_install    - install
 ##   pkg_remove     - remove
 ## * pkg_download   - download (but do not install) package
-##   pkg_upgrade    - upgrade
+## * pkg_upgrade    - upgrade
 ##   pkg_reinstall  - reinstall same version
 ##   pkg_clean_deps - remove packages that were installed
 ##                    only as dependencies and are not needed any more

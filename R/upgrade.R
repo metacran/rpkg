@@ -29,11 +29,12 @@ needs_upgrade <- function(new_versions, lib = pkg_paths()) {
 #'
 #' @param filter Regular expression to filter packages to check.
 #' @param lib Library paths to look at.
+#' @param print Whether to print list of outdated packages.
 #' @return A data frame with columns: package, installed, latest.
 
 #' @export
 
-pkg_outdated <- function(filter = "", lib = pkg_paths()) {
+pkg_outdated <- function(filter = "", lib = pkg_paths(), print = TRUE) {
   pkgs <- pkg_list(filter = filter, lib = lib)
   names <- vapply(pkgs, "[[", "", "Package")
 
@@ -56,12 +57,24 @@ pkg_outdated <- function(filter = "", lib = pkg_paths()) {
     latest = latest[ names[status == "obsolete"] ]
   )
 
+  attr(uptab, "uptodate") <- sum(status == "uptodate")
+  attr(uptab, "non-cran") <- sum(status == "non-cran")
+
   uptab <- uptab[order(uptab$package), ]
 
-  cat(sep = "", length(pkgs), " packages, ",
-      sum(status == "non-cran"), " not from CRAN, ",
-      sum(status == "uptodate"), " up to date, ",
-      sum(status == "obsolete"), " needs upgrade")
+  if (print) {
+    outdated_summary(uptab)
+  } else {
+    uptab
+  }
+}
+
+outdated_summary <- function(uptab) {
+  total <- attr(uptab, "non-cran") + attr(uptab, "uptodate") + nrow(uptab)
+  cat(sep = "", total, " packages, ",
+      attr(uptab, "non-cran"), " not from CRAN, ",
+      attr(uptab, "uptodate"), " up to date, ",
+      nrow(uptab), " needs upgrade")
 
   if (nrow(uptab)) {
     cat(":\n")
@@ -70,5 +83,19 @@ pkg_outdated <- function(filter = "", lib = pkg_paths()) {
     cat(".\n")
   }
 
-  invisible(uptab)
+  invisible()
+}
+
+#' Upgrade packages
+#'
+#' @param filter Regular expression to filter the packages to update.
+#' @param lib Library paths to look at.
+#' @param ... Extra arguments are passed to \code{\link{pkg_install}}.
+#' @return Invisibly a logical vector which is \code{TRUE} for
+#'   successfully installed packages, and \code{FALSE} for others.
+#' @export
+
+pkg_upgrade <- function(filter = "", lib = pkg_paths(), ...) {
+  out <- pkg_outdated(filter = filter, lib = lib, print = FALSE)
+  pkg_install(out$package, lib = lib, ...)
 }

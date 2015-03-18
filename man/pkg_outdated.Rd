@@ -4,12 +4,14 @@
 \alias{pkg_outdated}
 \title{List outdated packages}
 \usage{
-pkg_outdated(filter = "", lib = pkg_paths())
+pkg_outdated(filter = "", lib = pkg_paths(), print = TRUE)
 }
 \arguments{
 \item{filter}{Regular expression to filter packages to check.}
 
 \item{lib}{Library paths to look at.}
+
+\item{print}{Whether to print list of outdated packages.}
 }
 \value{
 A data frame with columns: package, installed, latest.
