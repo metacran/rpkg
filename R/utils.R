@@ -72,6 +72,10 @@ escape_package_name <- function(pkgs) {
   gsub(".", "\\.", pkgs, fixed = TRUE)
 }
 
+is_dir <- function(path) {
+  file.info(path)$isdir
+}
+
 create_writable_dir <- function(dir) {
   if (file.exists(dir) && !is_dir(dir)) {
     stop("Directory exists and not a directory")
