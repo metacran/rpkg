@@ -48,7 +48,7 @@ pkg_install <- function(pkgs, lib = pkg_paths()[1],
       sum(to_install == "install"), " new packages, upgrading ",
       sum(to_install == "upgrade"), "."
     )
-    message(strwrap(msg))
+    message(paste(strwrap(msg, exdent = 1), collapse = "\n"))
     if (ask) {
       if (menu(c("Yes", "No")) != 1) {
         message("Quiting.")
