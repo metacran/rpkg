@@ -111,5 +111,10 @@ filename_from_url <- function(url, pkg) {
 try_download <- function(url, dest_file) {
   if (file.exists(dest_file)) return(TRUE)
   resp <- GET(url, write_disk(dest_file))
-  status_code(resp) == 200
+  if (status_code(resp) != 200) {
+    unlink(dest_file)
+    FALSE
+  } else {
+    TRUE
+  }
 }
