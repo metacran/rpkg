@@ -6,14 +6,13 @@ base_packages <- c("base", "compiler", "datasets", "graphics",
 
 dep_types <- c("Imports", "Depends", "LinkingTo", "Enhances", "Suggests")
 
-#' @importFrom httr GET content
-#' @importFrom jsonlite fromJSON
-
 pkg_deps <- function(pkgs, tree = TRUE, include_base = FALSE) {
 
-  pkgs <- paste(pkgs, collapse = ",")
-  url <- paste0("http://crandb.r-pkg.org/-/pkgdeps/", pkgs)
-  deps <- fromJSON(content(GET(url), as = "text"), simplifyVector = FALSE)
+  stopifnot(! tree || length(pkgs) == 1)
+
+  deps <- crandb_query(paste0("-/pkgdeps/", paste(pkgs, collapse = ",")))
+  got_it <- pkgs %in% names(deps) | pkgs %in% sub("-.*$", "", names(deps))
+  if (! all(got_it)) unknown_pkg_error(pkgs[!got_it])
 
   if (!include_base) {
     deps <- deps[ ! names(deps) %in% base_packages ]
