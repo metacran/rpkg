@@ -86,3 +86,17 @@ create_writable_dir <- function(dir) {
 trim <- function(x) {
   sub("\\s*$", "", sub("^\\s*", "", x))
 }
+
+is_binary_pkg <- function(files) {
+  ! grepl("\\.tar\\.gz$", files)
+}
+
+same_bool_sub_seqs <- function(x) {
+  cp <- c(0, which(diff(x) != 0), length(x))
+  if (length(cp) == 2) {
+    list(list(seq = seq_along(x), val = x[1]))
+  } else {
+    ss <- mapply(cp[-length(cp)] + 1, cp[-1], FUN = seq)
+    mapply(list, seq = ss, val = x[sapply(ss, "[", 1)], SIMPLIFY = FALSE)
+  }
+}

@@ -77,6 +77,15 @@ pkg_install <- function(pkgs, lib = pkg_paths()[1],
 
 install_files <- function(files, lib) {
   create_writable_dir(lib)
-  install.packages(pkgs = files, repos = NULL, lib = lib,
-                   dependencies = FALSE, quiet = TRUE)
+  sub_seqs <- same_bool_sub_seqs(is_binary_pkg(files))
+  for (i in seq_along(sub_seqs)) {
+    if (sub_seqs[[i]]$val) {
+      install.packages(pkgs = files[sub_seqs[[i]]$seq], repos = NULL,
+                       lib = lib, dependencies = FALSE, quiet = TRUE)
+    } else {
+      install.packages(pkgs = files[sub_seqs[[i]]$seq], repos = NULL,
+                       lib = lib, dependencies = FALSE, quiet = TRUE,
+                       type = "source")
+    }
+  }
 }
