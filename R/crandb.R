@@ -33,7 +33,10 @@ crandb_query <- function(view, ...) {
 }
 
 crandb_pkgs <- function(pkgs) {
-  crandb_query("-/versions", keys = pkgs)
+  res <- crandb_query("-/versions", keys = pkgs)
+  for (i in seq_along(res)) class(res[[i]]) <- "rpkg"
+  class(res) <- "rpkgs"
+  res
 }
 
 crandb_latest_versions <- function(pkgs) {

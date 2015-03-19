@@ -18,7 +18,9 @@ pkg_info <- function(pkg, lib = pkg_paths()) {
   stopifnot(length(pkg) == 1, !is.na(pkg))
   stopifnot(all(!is.na(lib)))
 
-  regi <- crandb_pkgs(pkg)
+  regi <- crandb_pkgs(pkg)[[1]]
+
+  pkgtab <- split_pkg_names_versions(pkg)
 
   regi$InstalledVersion <- get_installed_version(pkgtab$name, lib = lib)
 
@@ -30,12 +32,7 @@ pkg_info <- function(pkg, lib = pkg_paths()) {
     paste("version", regi$InstalledVersion, "installed")
   }
 
-  pkgtab <- split_pkg_names_versions(pkg)
-
-  cat(sep = "", pkgtab$name, "-", regi$Version, " -- ", inst_text, "\n",
-      "---------------------------\n")
-
-  print(regi)
+  regi
 }
 
 #' Open URL(s) of packages in a browser
