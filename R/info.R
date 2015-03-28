@@ -5,15 +5,17 @@
 #' to be installed.
 #'
 #' @param pkg Package name and optionally version after a dash.
-#' @param lib Search paths to see if the package is installed.
+#' @param global Whether to check for installed packages globally
+#'   or locally.
 #' @return An rpkg package, invisibly.
 #'
 #' @export
 
-pkg_info <- function(pkg, lib = pkg_paths()) {
+pkg_info <- function(pkg, global = FALSE) {
 
   pkg <- as.character(pkg)
-  lib <- as.character(lib)
+
+  lib <- pkg_paths(global)
 
   stopifnot(length(pkg) == 1, !is.na(pkg))
   stopifnot(all(!is.na(lib)))

@@ -6,7 +6,7 @@
 ## - install: package is not installed
 ## - upgrade: package is installed but upgrade is needed
 ## - no:      package is installed and up to date
-needs_upgrade <- function(new_versions, lib = pkg_paths()) {
+needs_upgrade <- function(new_versions, lib) {
   pkg_tab <- split_pkg_names_versions(new_versions)
   stopifnot(all(pkg_tab$version != ""))
 
@@ -28,14 +28,17 @@ needs_upgrade <- function(new_versions, lib = pkg_paths()) {
 #' List outdated packages
 #'
 #' @param filter Regular expression to filter packages to check.
-#' @param lib Library paths to look at.
+#' @param global Whether to consider global or local packages.
 #' @param print Whether to print list of outdated packages.
 #' @return A data frame with columns: package, installed, latest.
 
 #' @export
 
-pkg_outdated <- function(filter = "", lib = pkg_paths(), print = TRUE) {
-  pkgs <- pkg_list(filter = filter, lib = lib)
+pkg_outdated <- function(filter = "", global = FALSE, print = TRUE) {
+
+  lib <- pkg_paths(global)
+
+  pkgs <- pkg_list(filter = filter, global = global)
   names <- vapply(pkgs, "[[", "", "Package")
 
   latest <- crandb_latest_versions(names)
@@ -89,13 +92,17 @@ outdated_summary <- function(uptab) {
 #' Upgrade packages
 #'
 #' @param filter Regular expression to filter the packages to update.
-#' @param lib Library paths to look at.
+#' @param global Whether to upgrade global or local packages.
 #' @param ... Extra arguments are passed to \code{\link{pkg_install}}.
 #' @return Invisibly a logical vector which is \code{TRUE} for
 #'   successfully installed packages, and \code{FALSE} for others.
 #' @export
 
-pkg_upgrade <- function(filter = "", lib = pkg_paths(), ...) {
-  out <- pkg_outdated(filter = filter, lib = lib, print = FALSE)
-  pkg_install(out$package, lib = lib, ...)
+pkg_upgrade <- function(filter = "", global = FALSE, ...) {
+  out <- pkg_outdated(filter = filter, global = global, print = FALSE)
+  if (nrow(out)) {
+    pkg_install(out$package, global = global, ...)
+  } else {
+    structure(character(), names = character())
+  }
 }

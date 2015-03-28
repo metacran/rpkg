@@ -19,7 +19,6 @@ NULL
 ## * pkg_info       - display information about package
 ## * pkg_outdated   - show installed packages that are outdated
 ##   pkg_doctor     - sanity checks
-## * pkg_paths      - set/get package directories
 ## * pkg_tree       - package(s) and their dependency tree
 ## * pkg_bug        - report bug for a package
 ## * pkg_browse     - home page of a package (or rpkg itself), or repo URL

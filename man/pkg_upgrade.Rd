@@ -4,12 +4,12 @@
 \alias{pkg_upgrade}
 \title{Upgrade packages}
 \usage{
-pkg_upgrade(filter = "", lib = pkg_paths(), ...)
+pkg_upgrade(filter = "", global = FALSE, ...)
 }
 \arguments{
 \item{filter}{Regular expression to filter the packages to update.}
 
-\item{lib}{Library paths to look at.}
+\item{global}{Whether to upgrade global or local packages.}
 
 \item{...}{Extra arguments are passed to \code{\link{pkg_install}}.}
 }

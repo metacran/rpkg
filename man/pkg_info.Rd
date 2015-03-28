@@ -4,12 +4,13 @@
 \alias{pkg_info}
 \title{Information about a package}
 \usage{
-pkg_info(pkg, lib = pkg_paths())
+pkg_info(pkg, global = FALSE)
 }
 \arguments{
 \item{pkg}{Package name and optionally version after a dash.}
 
-\item{lib}{Search paths to see if the package is installed.}
+\item{global}{Whether to check for installed packages globally
+or locally.}
 }
 \value{
 An rpkg package, invisibly.

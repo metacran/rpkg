@@ -4,12 +4,12 @@
 \alias{pkg_outdated}
 \title{List outdated packages}
 \usage{
-pkg_outdated(filter = "", lib = pkg_paths(), print = TRUE)
+pkg_outdated(filter = "", global = FALSE, print = TRUE)
 }
 \arguments{
 \item{filter}{Regular expression to filter packages to check.}
 
-\item{lib}{Library paths to look at.}
+\item{global}{Whether to consider global or local packages.}
 
 \item{print}{Whether to print list of outdated packages.}
 }

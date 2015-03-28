@@ -6,7 +6,7 @@
 #'
 #' @param pkgs The package(s) to install. Specific versions
 #'   can be specified after a dash.
-#' @param lib Library directory to install the packages to.
+#' @param global Whether to install packages globally.
 #' @param ask Whether to ask for confirmation before proceeding
 #'   with the installation.
 #' @param download_dir Directory to store the downloaded
@@ -15,22 +15,19 @@
 #'   successfully installed packages, and \code{FALSE} for others.
 #'
 #' @export
-#' @examples
-#' pkg_install("httr", lib = "/tmp")
-#' pkg_install("magrittr-1.0.0", lib = "/tmp", ask = FALSE)
 
-pkg_install <- function(pkgs, lib = pkg_paths()[1],
-                        ask = interactive(), download_dir = tempfile()) {
+pkg_install <- function(pkgs, global = FALSE, ask = interactive(),
+                        download_dir = tempfile()) {
 
   pkgs <- as.character(pkgs)
-  lib <- as.character(lib)
   ask <- as.logical(ask)
   download_dir <- as.character(download_dir)
 
   stopifnot(all(!is.na(pkgs)))
-  stopifnot(length(lib) == 1, !is.na(lib))
   stopifnot(length(ask) == 1, !is.na(ask))
   stopifnot(length(download_dir) == 1, !is.na(download_dir))
+
+  lib <- pkg_paths(global)
   
   ## Get dependencies
   deps <- pkg_deps(pkgs, tree = FALSE)

@@ -4,14 +4,14 @@
 \alias{pkg_install}
 \title{Install packages}
 \usage{
-pkg_install(pkgs, lib = pkg_paths()[1], ask = interactive(),
+pkg_install(pkgs, global = FALSE, ask = interactive(),
   download_dir = tempfile())
 }
 \arguments{
 \item{pkgs}{The package(s) to install. Specific versions
 can be specified after a dash.}
 
-\item{lib}{Library directory to install the packages to.}
+\item{global}{Whether to install packages globally.}
 
 \item{ask}{Whether to ask for confirmation before proceeding
 with the installation.}
@@ -25,9 +25,5 @@ Invisibly a logical vector which is \code{TRUE} for
 }
 \description{
 Install packages
-}
-\examples{
-pkg_install("httr", lib = "/tmp")
-pkg_install("magrittr-1.0.0", lib = "/tmp", ask = FALSE)
 }
 
