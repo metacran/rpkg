@@ -74,15 +74,13 @@ pkg_install <- function(pkgs, global = FALSE, ask = interactive(),
 
 install_files <- function(files, lib) {
   create_writable_dir(lib)
-  sub_seqs <- same_bool_sub_seqs(is_binary_pkg(files))
+  types <- pkg_type_from_filename(files)
+  sub_seqs <- same_bool_sub_seqs(types == "binary")
   for (i in seq_along(sub_seqs)) {
-    if (sub_seqs[[i]]$val) {
-      install.packages(pkgs = files[sub_seqs[[i]]$seq], repos = NULL,
-                       lib = lib, dependencies = FALSE, quiet = TRUE)
-    } else {
-      install.packages(pkgs = files[sub_seqs[[i]]$seq], repos = NULL,
-                       lib = lib, dependencies = FALSE, quiet = TRUE,
-                       type = "source")
-    }
+    filenames <- files[sub_seqs[[i]]$seq]
+    type <- types[sub_seqs[[i]]$seq][1]
+    install.packages(pkgs = filenames, repos = NULL,
+                     lib = lib, dependencies = FALSE, quiet = TRUE,
+                     type = type)
   }
 }

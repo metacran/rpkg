@@ -87,8 +87,8 @@ trim <- function(x) {
   sub("\\s*$", "", sub("^\\s*", "", x))
 }
 
-is_binary_pkg <- function(files) {
-  ! grepl("\\.tar\\.gz$", files)
+pkg_type_from_filename <- function(files) {
+  ifelse(grepl("\\.tar\\.gz$", files), "source", "binary")
 }
 
 same_bool_sub_seqs <- function(x) {

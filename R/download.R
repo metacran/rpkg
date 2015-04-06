@@ -8,12 +8,18 @@ r_minor_version <- function() {
 }
 
 get_pkg_type <- function() {
-  getOption("pkgType", .Platform$pkgType)
+  "both"
 }
 
 cran_file <- function(package, version, type = get_pkg_type(),
                       r_minor = r_minor_version()) {
-  if (type == "source") {
+
+  if (type == "both") {
+    c(cran_file(package, version, type = "binary", r_minor = r_minor),
+      cran_file(package, version, type = "source", r_minor = r_minor))
+  } else if (type == "binary") {
+    cran_file(package, version, type = .Platform$pkgType, r_minor = r_minor)
+  } else if (type == "source") {
     c(sprintf("%s/src/contrib/%s_%s.tar.gz", cran_mirror, package, version),
       sprintf("%s/src/contrib/Archive/%s/%s_%s.tar.gz", cran_mirror,
               package, package, version))
@@ -39,18 +45,11 @@ github_file <- function(package, version, type = get_pkg_type(),
 download_urls <- function(pkgs) {
   pkgtab <- split_pkg_names_versions(pkgs)
   stopifnot(all(pkgtab$version != ""))
-  type <- get_pkg_type()
 
   lapply(seq_along(pkgs), function(i) {
     pkg <- pkgtab[i,]
-    if (type == "source") {
-      c(cran_file(pkg["name"], pkg["version"], type = "source"),
-        github_file(pkg["name"], pkg["version"], type = "soruce"))
-    } else {
-      c(cran_file(pkg["name"], pkg["version"], type = type),
-        cran_file(pkg["name"], pkg["version"], type = "source"),
-        github_file(pkg["name"], pkg["version"], type = type))
-    }
+    c(cran_file(pkg["name"], pkg["version"]),
+      github_file(pkg["name"], pkg["version"]))
   })
 }
 
