@@ -16,7 +16,7 @@
 #'
 #' @export
 
-pkg_install <- function(pkgs, global = FALSE, ask = interactive(),
+pkg_install <- function(pkgs, global = FALSE, ask = FALSE,
                         download_dir = tempfile()) {
 
   pkgs <- as.character(pkgs)

@@ -4,8 +4,7 @@
 \alias{pkg_install}
 \title{Install packages}
 \usage{
-pkg_install(pkgs, global = FALSE, ask = interactive(),
-  download_dir = tempfile())
+pkg_install(pkgs, global = FALSE, ask = FALSE, download_dir = tempfile())
 }
 \arguments{
 \item{pkgs}{The package(s) to install. Specific versions
