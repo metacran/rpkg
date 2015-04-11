@@ -16,7 +16,6 @@ pkg_deps <- function(pkgs, tree = TRUE, include_base = FALSE) {
 
   if (!include_base) {
     deps <- deps[ ! names(deps) %in% base_packages ]
-    deps[] <- lapply(deps, setdiff, y = base_packages)
   }
 
   if (tree) {
