@@ -17,7 +17,9 @@ pkg_deps <- function(pkgs, tree = TRUE, include_base = FALSE) {
   if (!include_base) {
     deps <- deps[ ! names(deps) %in% base_packages ]
     for (i in seq_along(deps)) {
-      deps[[i]][] <- lapply(deps, setdiff, y = base_packages)
+      for (j in seq_along(deps[[i]])) {
+        deps[[i]][[j]] <- drop_names(deps[[i]][[j]], base_packages)
+      }
     }
   }
 
