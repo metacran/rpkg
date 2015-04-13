@@ -2,14 +2,15 @@
 #' Dependency tree of a package
 #'
 #' @param pkg Package name, optionally with version number after a dash.
+#' @param all Whether to include suggested and enhanced packages as well.
 #' @param include_base Whether to include base R packages in the tree.
 #'
 #' @export
 
-pkg_tree <- function(pkg, include_base = FALSE) {
+pkg_tree <- function(pkg, all = FALSE, include_base = FALSE) {
   stopifnot(length(pkg) == 1)
 
-  deps <- pkg_deps(pkg, include_base = include_base)
+  deps <- pkg_deps(pkg, all = all, include_base = include_base)
 
   draw_tree(names(deps)[1], deps, type = "")
 }

@@ -6,9 +6,10 @@ base_packages <- c("R", "base", "compiler", "datasets", "graphics",
 
 dep_types <- c("Imports", "Depends", "LinkingTo", "Enhances", "Suggests")
 
-pkg_deps <- function(pkgs, include_base = FALSE) {
+pkg_deps <- function(pkgs, all = FALSE, include_base = FALSE) {
 
-  deps <- crandb_query(paste0("-/pkgdeps/", paste(pkgs, collapse = ",")))
+  url <- if (all) "-/pkgdeps/all/" else "-/pkgdeps/"
+  deps <- crandb_query(paste0(url, paste(pkgs, collapse = ",")))
   got_it <- pkgs %in% names(deps) | pkgs %in% sub("-.*$", "", names(deps))
   if (! all(got_it)) unknown_pkg_error(pkgs[!got_it])
 

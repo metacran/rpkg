@@ -4,7 +4,8 @@
 \alias{pkg_install}
 \title{Install packages}
 \usage{
-pkg_install(pkgs, global = FALSE, ask = FALSE, download_dir = tempfile())
+pkg_install(pkgs, global = FALSE, ask = FALSE, all = FALSE,
+  download_dir = tempfile())
 }
 \arguments{
 \item{pkgs}{The package(s) to install. Specific versions
@@ -14,6 +15,11 @@ can be specified after a dash.}
 
 \item{ask}{Whether to ask for confirmation before proceeding
 with the installation.}
+
+\item{all}{Whether to install suggested and enhancaed packages
+as well, not only just the ones \code{pkgs} depend on, import from and
+link to. Set this to \code{TRUE} to make sure that you can run
+all examples and vignettes from the package(s).}
 
 \item{download_dir}{Directory to store the downloaded
 packages in.}

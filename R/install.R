@@ -9,6 +9,10 @@
 #' @param global Whether to install packages globally.
 #' @param ask Whether to ask for confirmation before proceeding
 #'   with the installation.
+#' @param all Whether to install suggested and enhancaed packages
+#'   as well, not only just the ones \code{pkgs} depend on, import from and
+#'   link to. Set this to \code{TRUE} to make sure that you can run
+#'   all examples and vignettes from the package(s).
 #' @param download_dir Directory to store the downloaded
 #'   packages in.
 #' @return Invisibly a logical vector which is \code{TRUE} for
@@ -17,7 +21,7 @@
 #' @export
 
 pkg_install <- function(pkgs, global = FALSE, ask = FALSE,
-                        download_dir = tempfile()) {
+                        all = FALSE, download_dir = tempfile()) {
 
   pkgs <- as.character(pkgs)
   ask <- as.logical(ask)
@@ -30,7 +34,7 @@ pkg_install <- function(pkgs, global = FALSE, ask = FALSE,
   lib <- pkg_paths(global)
   
   ## Get dependencies
-  deps <- pkg_deps(pkgs)
+  deps <- pkg_deps(pkgs, all = all)
 
   ## Create installation order
   order <- topo_sort(deps)
