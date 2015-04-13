@@ -30,7 +30,7 @@ pkg_install <- function(pkgs, global = FALSE, ask = FALSE,
   lib <- pkg_paths(global)
   
   ## Get dependencies
-  deps <- pkg_deps(pkgs, tree = FALSE)
+  deps <- pkg_deps(pkgs)
 
   ## Create installation order
   order <- topo_sort(deps)

@@ -100,3 +100,7 @@ same_bool_sub_seqs <- function(x) {
     mapply(list, seq = ss, val = x[sapply(ss, "[", 1)], SIMPLIFY = FALSE)
   }
 }
+
+drop_names <- function(list, drop) {
+  list[! names(list) %in% drop]
+}

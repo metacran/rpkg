@@ -7,15 +7,26 @@
 #' @export
 
 pkg_tree <- function(pkg, include_base = FALSE) {
-  draw_tree(pkg_deps(pkg, include_base = include_base))
+  stopifnot(length(pkg) == 1)
+
+  deps <- pkg_deps(pkg, include_base = include_base)
+
+  draw_tree(names(deps)[1], deps, type = "")
 }
 
-draw_tree <- function(deps, prefix = "", include_base = FALSE) {
+draw_tree <- function(pkg, deps, type = "", prefix = "") {
 
   if (prefix != "") cat(prefix, "`--", sep = "")
-  cat(deps$package, "\n")
-  for (el in deps$deps) {
-    if (length(el)) draw_tree(el, prefix = paste0("   ", prefix))
+
+  if (type != "") type <- paste0("[", tolower(type), "]")
+  cat(pkg, type, "\n")
+
+  for (dep_type in seq_along(deps[[pkg]])) {
+    for (dep_pkg in seq_along(deps[[pkg]][[dep_type]])) {
+      draw_tree(names(deps[[pkg]][[dep_type]])[dep_pkg], deps,
+                type = substr(names(deps[[pkg]])[dep_type], 1, 1),
+                prefix = paste0("  ", prefix))
+    }
   }
 
   invisible()
